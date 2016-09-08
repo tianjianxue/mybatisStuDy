@@ -5,8 +5,20 @@
 
 
     <select id="findAll" resultType="com.hzit.entity.Tblstudent">
-        SELECT * FROM  tblstudent
+        SELECT * FROM  tblstudent ORDER BY STUID
     </select>
+    <select id="findById" parameterType="java.lang.Integer" resultType="com.hzit.entity.Tblstudent">
+        SELECT  * from tblstudent WHERE StuID=#{0}
+    </select>
+    <insert id="add" parameterType="com.hzit.entity.Tblstudent">
+        INSERT INTO tblstudent(StuName,StuAge,StuSex) values( #{stuName},#{stuAge},#{stuSex})
+    </insert>
+    <delete id="del" parameterType="java.lang.Integer">
+        DELETE  FROM tblstudent  WHERE StuID=#{0}
+    </delete>
+    <update id="update" parameterType="com.hzit.entity.Tblstudent">
+        UPDATE tblstudent SET StuName=#{stuName},StuAge=#{stuAge},StuSex=#{stuSex} WHERE  StuID=#{stuId}
+    </update>
 
 
 

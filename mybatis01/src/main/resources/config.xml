@@ -6,7 +6,7 @@
             <transactionManager type="JDBC" />
             <dataSource type="POOLED">
                 <property name="driver" value="com.mysql.jdbc.Driver" />
-                <property name="url" value="jdbc:mysql://localhost:3306/mystudentdb" />
+                <property name="url" value="jdbc:mysql://localhost:3306/mystudentdb?useUnicode=true&amp;characterEncoding=UTF-8" />
                 <property name="username" value="root" />
                 <property name="password" value="root" />
             </dataSource>
@@ -14,5 +14,7 @@
     </environments>
     <mappers>
         <mapper resource="com/hzit/dao/TblStudentMapper.xml"></mapper>
+        <mapper resource="com/hzit/dao/UserInfoDao.xml"></mapper>
+        <mapper resource="com/hzit/dao/TblClassMapper.xml"></mapper>
     </mappers>
 </configuration>

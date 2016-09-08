@@ -3,9 +3,8 @@ package com.hzit.test;
 import com.hzit.dao.TblStudentMapper;
 import com.hzit.entity.Tblstudent;
 import org.apache.ibatis.io.Resources;
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.apache.ibatis.session.*;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -17,26 +16,78 @@ import java.util.List;
  */
 public class TestMyBatis {
     String resource = "config.xml";
-    @Test
-    public void one(){
+    SqlSession sqlSession;
 
-        //加载mybatis的配置文件（它也加载关联的映射文件）
-        Reader reader = null;
+    @Before
+    public void inist(){
         try {
-            reader = Resources.getResourceAsReader(resource);
+            Reader reader=Resources.getResourceAsReader(resource);
+            SqlSessionFactory factory=new SqlSessionFactoryBuilder().build(reader);
+            sqlSession= factory.openSession();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //构建sqlSession的工厂
-        SqlSessionFactory sessionFactory = new SqlSessionFactoryBuilder().build(reader);
-        //创建能执行映射文件中sql的sqlSession
-        SqlSession session = sessionFactory.openSession();
-        //映射sql的标识字符串
-        String statement = "com.hzit.dao.TblStudent.findList";
-        //执行查询返回一个唯一user对象的sql
-        List<Tblstudent> user = session.selectList(statement);
-        System.out.println(user.size());
-
+    }
+    @Test
+    public void testselectone(){
+        String statument="com.hzit.dao.TblStudentMapper.findById";
+        Tblstudent tblstudent= sqlSession.selectOne(statument,123);
+        System.out.println(tblstudent);
+    }
+    @Test
+    public void testselectAll(){
+        String statument="com.hzit.dao.TblStudentMapper.findAll";
+        List<Tblstudent> tblstudent= sqlSession.selectList(statument);
+        System.out.println(tblstudent);
+    }
+    @Test
+    public void testselect(){
+        String statument="com.hzit.dao.TblStudentMapper.findAll";
+        sqlSession.select(statument, new ResultHandler() {
+            public void handleResult(ResultContext resultContext) {
+                Tblstudent tbl=(Tblstudent)resultContext.getResultObject();
+                System.out.println(tbl);
+            }
+        });
+    }
+    @Test
+    public void testInsert(){
+        String statment="com.hzit.dao.TblStudentMapper.add";
+        Tblstudent tbl=new Tblstudent();
+        tbl.setStuAge("20");
+        tbl.setStuName("jack");
+        tbl.setStuSex("男");
+        sqlSession.insert(statment,tbl);
+        sqlSession.commit();
+    }
+    @Test
+    public void testdel(){
+        String statment="com.hzit.dao.TblStudentMapper.del";
+        int num=sqlSession.delete(statment,1022);
+        System.out.println(num);
+        sqlSession.commit();
+    }
+    @Test
+    public void testupdate(){
+        String statment="com.hzit.dao.TblStudentMapper.update";
+        Tblstudent tbl=new Tblstudent();
+        tbl.setStuAge("20");
+        tbl.setStuName("123");
+        tbl.setStuSex("男");
+        tbl.setStuId(1023);
+        int num=sqlSession.update(statment,tbl);
+        System.out.println(num);
+        sqlSession.commit();
+    }
+    @Test
+    public void testFenYe(){
+        String statment="com.hzit.dao.TblStudentMapper.findAll";
+        List<Tblstudent> data=sqlSession.selectList(statment,null,new RowBounds(5,10));
+        System.out.println(data.size());
+        for(Tblstudent tbl :data){
+            System.out.println(tbl);
+        }
+        sqlSession.commit();
     }
 
     @Test
